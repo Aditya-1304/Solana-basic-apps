@@ -5,6 +5,7 @@ pub mod state;
 
 use anchor_lang::prelude::*;
 pub use crate::instructions::make_offer::{send_offered_tokens_to_vault, save_offer};
+pub use crate::instructions::take_offer::{send_wanted_tokens_to_maker, withdraw_and_close_vault};
 
 pub use constants::*;
 pub use instructions::*;
@@ -22,5 +23,10 @@ pub mod swap {
         
     }
 
-    // pub fn take_offer(ctx: Context<TakeOffer>)
+    pub fn take_offer(ctx: Context<TakeOffer>) -> Result<()> {
+        instructions::take_offer::send_wanted_tokens_to_maker(&ctx)?;
+        instructions::take_offer::withdraw_and_close_vault(ctx)?;
+        Ok(())
+        
+    }
 }

@@ -1,13 +1,14 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface, TransferChecked, transfer_checked};
 
+
 pub fn transfer_token<'info>(
-  from: &AccountInfo<'info>,
-  to: &AccountInfo<'info>,
+  from :&InterfaceAccount<'info, TokenAccount>,
+  to :&InterfaceAccount<'info, TokenAccount>,
   amount: &u64,
-  mint: &AccountInfo<'info>,
+  mint: &InterfaceAccount<'info, Mint>,
   authority: &Signer<'info>,
-  token_program: &Interface<'info, TokenInterface>
+  token_program: &Interface<'info,TokenInterface>
 )-> Result<()>{
 
   let transfer_accounts_options = TransferChecked {
@@ -22,7 +23,6 @@ pub fn transfer_token<'info>(
     transfer_accounts_options,
   );
 
-  // You'll need to get decimals from the mint
-  let mint_data = Mint::try_deserialize(&mut &mint.data.borrow()[..])?;
-  transfer_checked(cpi_context, *amount, mint_data.decimals)
+  transfer_checked(cpi_context, *amount, mint.decimals)?;
+  Ok(())
 }
